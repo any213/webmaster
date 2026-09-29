@@ -1,0 +1,212 @@
+/* =========================================================
+   인스타그램 스타일 만들기
+   빈칸(_______)을 선생님과 함께 하나씩 채워봅시다!
+   ========================================================= */
+
+
+/* =========================================================
+   STEP 1 — 전체 배경 만들기
+   ========================================================= */
+
+body {
+  font-family: sans-serif;
+  color: #262626;
+  margin: 0 auto;
+  padding: 20px 0 60px 0;
+
+  background-color: _________;    /* ① 연한 회색 배경 */
+  max-width: _________;           /* ② 화면 가로 너비 */
+}
+
+
+/* =========================================================
+   STEP 2 — 프로필 카드 만들기
+   ========================================================= */
+
+.profile {
+  border: 1px solid #dbdbdb;
+  padding: 30px 20px 25px 20px;
+  margin-bottom: 25px;
+
+  background-color: _________;    /* ③ 카드 배경색 */
+  border-radius: _________;       /* ④ 모서리 둥글게 */
+  text-align: _________;          /* ⑤ 가운데 정렬 */
+}
+
+
+/* =========================================================
+   STEP 3 — 프로필 사진 동그랗게 + 무지개 테두리
+   ========================================================= */
+
+.profile img {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  padding: 4px;
+  border: 4px solid white;
+
+  border-radius: _________;       /* ⑥ 완전한 동그라미 */
+  background: _________;          /* ⑦ 무지개 그라데이션 */
+}
+
+.profile h1 {
+  font-size: 21px;
+  margin: 16px 0 10px 0;
+}
+
+
+/* =========================================================
+   STEP 4 — 팔로워 숫자 만들기 (CSS가 글자를 만들어요!)
+   ========================================================= */
+
+.profile h1::after {
+  display: block;
+  font-size: 14px;
+  font-weight: normal;
+  margin-top: 10px;
+
+  content: _________;             /* ⑧ 보여줄 글자 */
+  color: _________;               /* ⑨ 흐린 회색 */
+}
+
+.profile p {
+  font-size: 15px;
+  line-height: 1.6;
+  margin: 3px 0;
+}
+
+.profile a {
+  color: #00376b;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+
+/* =========================================================
+   STEP 5 — 게시물 카드 만들기
+   ========================================================= */
+
+.post {
+  border: 1px solid #dbdbdb;
+  margin-bottom: 25px;
+  overflow: hidden;
+
+  /* 아래 두 줄은 순서를 바꾸는 마법! (그대로 두세요) */
+  display: flex;
+  flex-direction: column;
+
+  background-color: _________;    /* ⑩ 카드 배경색 */
+  border-radius: _________;       /* ⑪ 모서리 둥글게 */
+}
+
+
+/* =========================================================
+   STEP 6 — 게시물 맨 위 (작은 프로필 + 아이디)
+   ========================================================= */
+
+.post h4 {
+  order: 1;
+  font-size: 14px;
+  padding: 12px 16px;
+  margin: 0;
+
+  border-bottom: _________;       /* ⑫ 아래쪽 구분선 */
+}
+
+.post h4::before {
+  display: inline-block;
+  background: linear-gradient(45deg, #f09433, #dc2743, #bc1888);
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  line-height: 28px;
+  text-align: center;
+  margin-right: 10px;
+  vertical-align: middle;
+
+  content: _________;             /* ⑬ 작은 프로필 이모지 */
+}
+
+
+/* =========================================================
+   STEP 7 — 이모지를 사진처럼 크게!
+   ========================================================= */
+
+.post h2 {
+  order: 2;
+  margin: 0;
+  padding: 55px 0;
+
+  background-color: _________;    /* ⑭ 사진 영역 배경색 */
+  font-size: _________;           /* ⑮ 이모지 크기 */
+  text-align: _________;          /* ⑯ 가운데 정렬 */
+}
+
+
+/* =========================================================
+   STEP 8 — 좋아요 · 댓글 아이콘 줄
+   ========================================================= */
+
+.post::after {
+  order: 3;
+  padding: 12px 16px 4px 16px;
+  letter-spacing: 4px;
+
+  content: _________;             /* ⑰ 아이콘 3개 */
+  font-size: _________;           /* ⑱ 아이콘 크기 */
+}
+
+
+/* =========================================================
+   STEP 9 — 좋아요 개수 · 제목 · 본문
+   ========================================================= */
+
+/* 좋아요 개수 */
+.post p:nth-of-type(3) {
+  order: 4;
+  font-size: 15px;
+  padding: 0 16px;
+  margin: 4px 0;
+
+  font-weight: _________;         /* ⑲ 굵게 */
+}
+
+/* 제목 */
+.post h3 {
+  order: 5;
+  font-size: 16px;
+  padding: 0 16px;
+  margin: 8px 0 4px 0;
+}
+
+/* 본문 */
+.post p:nth-of-type(1) {
+  order: 6;
+  font-size: 15px;
+  line-height: 1.5;
+  padding: 0 16px;
+  margin: 0;
+}
+
+
+/* =========================================================
+   STEP 10 — 해시태그 파란색 + 시간 표시
+   ========================================================= */
+
+.post p:nth-of-type(2) {
+  order: 7;
+  font-size: 15px;
+  padding: 0 16px;
+  margin: 6px 0 0 0;
+
+  color: _________;               /* ⑳ 인스타 파란색 */
+}
+
+.post p:nth-of-type(2)::after {
+  display: block;
+  font-size: 12px;
+  color: #8e8e8e;
+  margin: 10px 0 16px 0;
+
+  content: _________;             /* ㉑ 시간 표시 */
+}
