@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>해솔스타그램</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#fff; --line:#dbdbdb; --line2:#efefef; --text:#000; --t2:#262626; --sub:#737373;
+    --link:#00376b; --red:#ff3040;
+    --ring:linear-gradient(45deg,#feda75 0%,#fa7e1e 25%,#d62976 50%,#962fbf 75%,#4f5bd5 100%);
+    --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Apple SD Gothic Neo","Malgun Gothic","맑은 고딕",Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--t2);font-family:var(--font);font-size:14px;-webkit-font-smoothing:antialiased}
+  button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+  svg.i{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2;stroke-linejoin:round;stroke-linecap:round;display:block}
+
+  /* ───── 로고 ───── */
+  .word{font-family:"Jua",var(--font);font-size:30px;line-height:1;color:var(--text);letter-spacing:-.5px;white-space:nowrap}
+  .mark{width:30px;height:30px;border-radius:9px;background:var(--ring);display:grid;place-items:center;
+    color:#fff;font-family:"Jua",var(--font);font-size:17px;line-height:1;flex:0 0 auto}
+
+  /* ───── 왼쪽 메뉴 (PC) ───── */
+  .side{position:fixed;inset:0 auto 0 0;width:244px;border-right:1px solid var(--line);padding:8px 12px 20px;
+    display:flex;flex-direction:column;background:#fff;z-index:20}
+  .side .brand{display:flex;align-items:center;height:92px;padding:0 12px;overflow:hidden}
+  .side .brand .mark{display:none}
+  .nav{display:flex;flex-direction:column;gap:2px}
+  .nav button{display:flex;align-items:center;gap:16px;padding:12px;border-radius:8px;font-size:16px;color:var(--text);transition:background .15s}
+  .nav button:hover{background:#f2f2f2}
+  .nav button.on{font-weight:700}
+  .nav button.on svg{stroke-width:2.6}
+  .nav .me{width:24px;height:24px;border-radius:50%;background:var(--ring);display:grid;place-items:center;
+    color:#fff;font-size:11px;font-weight:700;font-family:"Jua",var(--font)}
+  .side .foot{margin-top:auto;padding:12px;color:var(--sub);font-size:12px;line-height:1.6}
+
+  /* ───── 위/아래 바 (휴대폰) ───── */
+  .mtop,.mbot{display:none}
+
+  /* ───── 본문 ───── */
+  .wrap{margin-left:244px;min-height:100vh}
+  .view{display:none}
+  .view.on{display:block}
+
+  /* 홈: 스토리 + 피드 */
+  .feed{max-width:860px;margin:0 auto;padding:24px 24px 60px}
+  .made{margin:0 16px 26px;padding:18px 20px;border-radius:14px;background:#fafafa;border:1px solid var(--line);
+    display:flex;gap:14px;align-items:flex-start}
+  .made .ic{width:44px;height:44px;border-radius:12px;background:var(--ring);flex:0 0 auto;display:grid;place-items:center;font-size:22px}
+  .made b{display:block;font-size:16px;color:var(--text);margin-bottom:4px}
+  .made p{margin:0;color:var(--sub);line-height:1.55;font-size:14px}
+  .made .steps{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+  .made .steps span{font-size:12px;font-weight:600;color:var(--t2);background:#efefef;border-radius:999px;padding:4px 10px}
+  .badge{font-size:12px;font-weight:600;color:#fff;background:var(--ring);border-radius:999px;padding:4px 10px;white-space:nowrap}
+  .hhead{display:flex;align-items:center;padding:0 16px 18px;font-size:16px;color:var(--text)}
+  .hhead button{margin-left:auto;font-size:14px;font-weight:600;background:#efefef;border-radius:8px;padding:7px 12px}
+  .hhead button:hover{background:#dbdbdb}
+  .people{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:28px 12px;padding:0 16px}
+  .pp{text-align:center;min-width:0}
+  .pp .av{width:108px;height:108px;margin:0 auto;padding:3px;transition:transform .15s}
+  .pp .av .in{border-width:3px;font-size:32px}
+  .pp:hover .av{transform:scale(1.05)}
+  .pp b{display:block;margin-top:8px;font-size:14px;font-weight:600;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .pp small{display:block;color:var(--sub);font-size:12px;margin-top:2px}
+  .av{border-radius:50%;padding:2px;background:var(--ring);flex:0 0 auto}
+  .av .in{position:relative;width:100%;height:100%;border-radius:50%;border:2px solid #fff;background:#efefef;overflow:hidden;
+    display:grid;place-items:center;font-weight:700;color:#8e8e8e}
+  .av .in img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+
+  /* 알림 */
+  .hasdot{position:relative}
+  .hasdot::after{content:"";position:absolute;width:8px;height:8px;border-radius:50%;background:var(--red);border:2px solid #fff}
+  .nav .hasdot::after{left:28px;top:9px}
+  .mtop .hasdot::after,.mbot .hasdot::after{right:-2px;top:-2px}
+  .mbot .hasdot::after{right:14px;top:8px}
+  .seen .hasdot::after{display:none}
+  .notify{max-width:520px;margin:0 auto;padding:24px 16px 60px}
+  .notify h2{font-size:24px;font-weight:700;color:var(--text);margin:8px 0 6px}
+  .ngroup{font-size:16px;font-weight:700;color:var(--text);margin:22px 0 6px;padding-top:16px;border-top:1px solid var(--line2)}
+  .ngroup:first-of-type{border-top:0;padding-top:0}
+  .nrow{display:flex;align-items:center;gap:12px;padding:8px 0;opacity:0;transform:translateY(6px);animation:nin .35s ease forwards}
+  @keyframes nin{to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion:reduce){.nrow{animation:none;opacity:1;transform:none}}
+  .nrow .stack{position:relative;width:44px;height:44px;flex:0 0 auto}
+  .nrow .stack .av{position:absolute;width:32px;height:32px}
+  .nrow .stack .av:first-child{left:0;top:0}
+  .nrow .stack .av:last-child{right:0;bottom:0;box-shadow:0 0 0 2px #fff}
+  .nrow > .av{width:44px;height:44px}
+  .nrow .txt{flex:1;min-width:0;overflow-wrap:anywhere;line-height:1.4;color:var(--t2);font-size:14px}
+  .nrow .txt b{font-weight:600;color:var(--text)}
+  .nrow .txt time{color:var(--sub);margin-left:4px}
+  .nrow .thumb{width:44px;height:44px;border-radius:6px;background:#efefef;display:grid;place-items:center;font-size:20px;white-space:nowrap;letter-spacing:-4px;flex:0 0 auto;overflow:hidden}
+  .nrow .follow{background:#0095f6;color:#fff;font-weight:600;font-size:13px;border-radius:8px;padding:7px 14px;flex:0 0 auto}
+  .nrow .follow.on{background:#efefef;color:var(--text)}
+  .fighting{margin:18px 0 0;border-radius:14px;padding:22px 18px;text-align:center;color:#fff;background:var(--ring)}
+  .fighting b{display:block;font-family:"Jua",var(--font);font-size:28px;letter-spacing:.5px}
+  .fighting small{display:block;margin-top:6px;font-size:13px;opacity:.95}
+  /* 검색 */
+  .search{max-width:470px;margin:0 auto;padding:24px 16px 60px}
+  .search h2{font-size:24px;font-weight:600;color:var(--text);margin:8px 0 22px}
+  .sbox{position:relative}
+  .sbox input{width:100%;height:40px;border:0;border-radius:8px;background:#efefef;padding:0 36px 0 40px;font:inherit;font-size:16px;outline:none}
+  .sbox svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:18px;height:18px;color:var(--sub)}
+  .sbox input::-webkit-search-cancel-button{display:none}
+  .sbox .clr{position:absolute;right:10px;top:50%;transform:translateY(-50%);width:20px;height:20px;border-radius:50%;
+    background:#c7c7c7;color:#fff;font-size:12px;display:none;place-items:center}
+  .slabel{margin:24px 0 8px;font-weight:600;color:var(--text);font-size:16px}
+  .row{display:flex;align-items:center;gap:12px;width:100%;padding:8px 4px;border-radius:8px;text-align:left}
+  .row:hover{background:#f2f2f2}
+  .row .av{width:44px;height:44px}
+  .row b{display:block;font-weight:600;color:var(--text)}
+  .row small{color:var(--sub);font-size:14px}
+  .none{color:var(--sub);text-align:center;padding:40px 0}
+
+  /* 학생 페이지 보기 창 */
+  .viewer{position:fixed;inset:0;background:rgba(0,0,0,.65);display:none;align-items:center;justify-content:center;z-index:50;padding:20px}
+  .viewer.on{display:flex}
+  .frame{width:min(560px,100%);height:min(92vh,980px);background:#fff;border-radius:12px;overflow:hidden;display:flex;flex-direction:column}
+  .fbar{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--line)}
+  .fbar .av{width:32px;height:32px}
+  .fbar b{flex:1;font-weight:600;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .fbar a{background:#efefef;border-radius:8px;padding:7px 12px;font-weight:600;color:var(--text);text-decoration:none;font-size:13px}
+  .fbar .x{font-size:26px;line-height:1;padding:0 4px}
+  iframe{flex:1;border:0;width:100%}
+
+  /* ───── 휴대폰 ───── */
+  @media (max-width:767px){
+    .side{display:none}
+    .wrap{margin-left:0;padding:60px 0 56px}
+    .mtop{display:flex;align-items:center;position:fixed;inset:0 0 auto 0;height:60px;padding:0 16px;background:#fff;
+      border-bottom:1px solid var(--line);z-index:20;gap:8px}
+    .mtop .word{font-size:28px}
+    .mtop .r{margin-left:auto;display:flex;gap:20px;color:var(--text)}
+    .mbot{display:flex;justify-content:space-around;align-items:center;position:fixed;inset:auto 0 0 0;height:50px;
+      background:#fff;border-top:1px solid var(--line);z-index:20;color:var(--text)}
+    .mbot button{padding:10px 18px}
+    .mbot button.on svg{stroke-width:2.6}
+    .feed{padding:8px 0 60px}
+    .people{grid-template-columns:repeat(3,1fr);gap:20px 8px}
+    .pp .av{width:84px;height:84px;padding:3px}
+    .pp .av .in{border-width:3px;font-size:28px}
+    .pp b{font-size:14px}
+    .pp small{font-size:12px}
+    .hhead{padding-top:8px}
+    .made{margin:12px 12px 20px;padding:14px}
+    .fbar .badge{display:none}
+    .viewer{padding:0}
+    .frame{height:100vh;border-radius:0}
+  }
+  @media (min-width:768px) and (max-width:1263px){
+    .side{width:72px;padding:8px}
+    .side .brand{justify-content:center;padding:0}
+    .side .brand .word{display:none}
+    .side .brand .mark{display:grid}
+    .nav button{justify-content:center}
+    .nav button span{display:none}
+    .side .foot{display:none}
+    .wrap{margin-left:72px}
+  }
+</style>
+</head>
+<body>
+
+<!-- 아이콘 모음 -->
+<svg width="0" height="0" style="position:absolute">
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5V21h-6.5v-6h-5v6H3z"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="7"/><path d="m16 16 5 5"/></symbol>
+  <symbol id="i-heart" viewBox="0 0 24 24"><path d="M16.8 3.6c-2 0-3.6 1-4.8 2.7-1.2-1.7-2.8-2.7-4.8-2.7C4.3 3.6 2 6 2 9c0 5.6 8.8 10.9 10 11.6C13.2 19.9 22 14.6 22 9c0-3-2.3-5.4-5.2-5.4z"/></symbol>
+</svg>
+
+<aside class="side">
+  <div class="brand"><span class="word">해솔스타그램</span><span class="mark">해</span></div>
+  <nav class="nav">
+    <button data-go="home" class="on"><svg class="i"><use href="#i-home"/></svg><span>홈</span></button>
+    <button data-go="search"><svg class="i"><use href="#i-search"/></svg><span>검색</span></button>
+    <button data-go="notify" class="hasdot"><svg class="i"><use href="#i-heart"/></svg><span>알림</span></button>
+    <button data-go="home"><div class="me">웹</div><span>웹마스터</span></button>
+  </nav>
+  <div class="foot">안산해솔중 3학년 · 디지털마에스트로<br>웹마스터 수업 작품 모음<br>모든 페이지는 학생이 직접 코딩했어요 ✍️</div>
+</aside>
+
+<header class="mtop">
+  <span class="word">해솔스타그램</span>
+  <div class="r">
+    <button data-go="notify" class="hasdot" aria-label="알림"><svg class="i"><use href="#i-heart"/></svg></button>
+  </div>
+</header>
+
+<div class="wrap">
+  <section class="view on" id="v-home">
+    <div class="feed">
+      <div class="made">
+        <div class="ic">⌨️</div>
+        <div>
+          <b>여기 있는 페이지는 전부 학생들이 직접 코딩했어요</b>
+          <p>프로필, 게시물, 디자인까지 학생 한 명 한 명이 선생님과 함께 VS Code에서 HTML과 CSS 코드를 한 줄씩 직접 입력해서 완성한 페이지예요.</p>
+          <div class="steps"><span>1차시 웹의 원리 · 개발자 도구</span><span>2차시 HTML로 뼈대 만들기</span><span>3–4차시 CSS로 꾸미기</span></div>
+        </div>
+      </div>
+      <div class="hhead"><b>우리 반 친구들</b><button id="shuffle">🔀 섞기</button></div>
+      <div class="people" id="people"></div>
+    </div>
+  </section>
+
+
+  <section class="view" id="v-notify">
+    <div class="notify">
+      <h2>알림</h2>
+      <div id="nlist"></div>
+      <div class="fighting"><b>안산해솔중 화이팅! 💪</b><small>3학년 디지털마에스트로 · 웹마스터 23명</small></div>
+    </div>
+  </section>
+
+  <section class="view" id="v-search">
+    <div class="search">
+      <h2>검색</h2>
+      <div class="sbox">
+        <svg class="i"><use href="#i-search"/></svg>
+        <input id="q" type="search" placeholder="이름 · 아이디 · 학번" autocomplete="off">
+        <button class="clr" id="clr" aria-label="지우기">✕</button>
+      </div>
+      <div class="slabel" id="slabel">우리 반 전체</div>
+      <div id="results"></div>
+    </div>
+  </section>
+</div>
+
+<nav class="mbot">
+  <button data-go="home" class="on" aria-label="홈"><svg class="i"><use href="#i-home"/></svg></button>
+  <button data-go="search" aria-label="검색"><svg class="i"><use href="#i-search"/></svg></button>
+  <button data-go="notify" class="hasdot" aria-label="알림"><svg class="i"><use href="#i-heart"/></svg></button>
+</nav>
+
+<div class="viewer" id="viewer">
+  <div class="frame">
+    <div class="fbar">
+      <span id="vav"></span>
+      <b id="vtitle"></b>
+      <span class="badge">✍️ 직접 코딩한 페이지</span>
+      <a id="vopen" href="#" target="_blank">새 창으로</a>
+      <button class="x" id="vclose" aria-label="닫기">×</button>
+    </div>
+    <iframe id="vframe" title="학생 페이지"></iframe>
+  </div>
+</div>
+
+<script>
+const PEOPLE = [{"name": "김단우", "no": "30106", "id": "김단우", "img": "https://i.namu.wiki/i/7wKEvgbd1PLHTTELx5J_i6Jh6sNRDtVCRSDGzluIThbl_sbOBmNRRKf5dG25u8iwmVdIY-SkYMSA_o4CUqM1Ng.webp", "bio": "특징 : 김영우보다 농구 5000만배는 잘함 ㅋ", "emoji": "📷", "title": "오늘 농구했어요", "txt": "김영우 이겼어요! 쉽네요", "tag": "#해솔중 #웹마스터", "like": 0, "pimg": ""}, {"name": "민시후", "no": "30110", "id": "Okja", "img": "https://dimg.donga.com/wps/SPORTS/IMAGE/2017/06/08/84780063.2.jpg", "bio": "옥자 사랑해요🐖", "emoji": "🐖", "title": "오늘도 마크에서 옥자를 봤다!", "txt": "친구들이랑 옥자를 구경했다!", "tag": "🐖🐖 love 옥자", "like": 0, "pimg": ""}, {"name": "서지우", "no": "30113", "id": "s_jixoo", "img": "https://dimg.donga.com/wps/NEWS/IMAGE/2017/06/08/84780063.3.jpg", "bio": "게임 많이 하는 사람🎰", "emoji": "🖼️", "title": "옥자", "txt": "여기에 내용을 써요", "tag": "#해솔중 #웹마스터", "like": 0, "pimg": "https://dimg.donga.com/wps/NEWS/IMAGE/2017/06/08/84780063.3.jpg"}, {"name": "강혜민", "no": "30201", "id": "hye_min", "img": "https://ilovecharacter.com/news/data/20250501/p1065572674315832_435_thum.png", "bio": "30201", "emoji": "📷", "title": "공부할게 너무 많아..", "txt": "공부하기 싫다..", "tag": "#집 #가고 #싶다", "like": 0, "pimg": ""}, {"name": "김대현", "no": "30204", "id": "kimm._.mr", "img": "https://i.namu.wiki/i/nGmHkhuqb4AYrgPQFYbpf_L_l-xgTtzsjSoR17KF8pcjMZxnO47lcTPgc0ID6E0PAvJe8DPOQ_wTFBRyBbMaqQ.webp", "bio": "게임하는 사람🎮", "emoji": "🎮", "title": "오늘도 마인크래프트", "txt": "친구들이랑 마을 만들었다!", "tag": "#마인크래프트 #건축", "like": 24, "pimg": ""}, {"name": "김예준", "no": "30305", "id": "pwnsra8", "img": "https://i.namu.wiki/i/KqMBI5PcNq_bW6P-hnWl9ZehGkUxP0veYiTVERDSclNp8UnBS7uwWY4d8jkd-_l8Q6fp-yMHgZThpVT3rZmK2Q.webp", "bio": "축구를 좋아하는 사람⚽", "emoji": "🖼️", "title": "GLORY MANCHESTER UNITED", "txt": "MAN UTD 2:0 MAN CITY", "tag": "#MAN UNITED #RED", "like": 1015000, "pimg": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT4ZogNqO4VcoeF_GpNRFG46VhJrk1RG38inKkYohTCQ4OSMpW563KUcU3k&s=10"}, {"name": "심수빈", "no": "30313", "id": "shimsubeen", "img": "https://i.namu.wiki/i/KoAsXaqnGdy8MccsH5aWYVwkzy-jf4oNrHp-wyhv9Rx5B5qRL_9bjykEc9JASXcB90f5NyQ9llkHE9FUfAxEIA.webp", "bio": "낮잠자는 사람🛌", "emoji": "🏠", "title": "오늘도 낮잠", "txt": "집이 최고! 빨리 집가서 앙꼬 보고 싶다ㅠ", "tag": "#집 #최고 #행복", "like": 24, "pimg": ""}, {"name": "정연우", "no": "30322", "id": "xyeowo", "img": "https://preview.redd.it/new-zac-emote-on-pbe-v0-jy0hdblnlnpg1.png?auto=webp&s=7cf6700db4d03963d3d15d1f7bda339ebf01b49b", "bio": "겜을 하는 사람🕹️", "emoji": "🎓", "title": "오늘도 겜", "txt": "친구들이랑 겜 했다", "tag": "#발로란트 #오버워치", "like": 22, "pimg": ""}, {"name": "손지우", "no": "30414", "id": "ziiwoo", "img": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS5sYtJnca0krHhLWZgqoH9fQA-HdnlWw4vLR73Sdbr-A&s", "bio": "게임하는 사람", "emoji": "📷", "title": "나의 첫 게시물", "txt": "여기에 내용을 써요", "tag": "#해솔중 #웹마스터", "like": 0, "pimg": ""}, {"name": "허소윤", "no": "30429", "id": "내아이디", "img": "", "bio": "나를 소개하는 한 줄", "emoji": "📷", "title": "나의 첫 게시물", "txt": "여기에 내용을 써요", "tag": "#해솔중 #웹마스터", "like": 0, "pimg": ""}, {"name": "이라희", "no": "30515", "id": "rahee", "img": "https://i.namu.wiki/i/XDH2CDz5hQ_safBefBCvz7NOl8fiXoMg0HSIqhogw9XczaoE8N6rp9pS6Jz--_w8tX69eXr8NRRzUzUwnT-YPg.webp", "bio": "치이카와 좋아하는 사람", "emoji": "^_^", "title": "치이카와", "txt": "치이카와 귀여워", "tag": "#치이카와", "like": 24, "pimg": ""}, {"name": "진태형", "no": "30525", "id": "진태형", "img": "https://preview.redd.it/new-zac-emote-on-pbe-v0-jy0hdblnlnpg1.png?auto=webp&s=7cf6700db4d03963d3d15d1f7bda339ebf01b49b", "bio": "게임을 나름 하고 열심히 그림그리는 사람입니다! ☆*: .｡. o(≧▽≦)o .｡.:*☆", "emoji": "😺", "title": "오늘도 롤", "txt": "여기에 내용을 써요", "tag": "#롤 #그림", "like": 99, "pimg": ""}, {"name": "김민성", "no": "30604", "id": "kx_ms", "img": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSx-qc94oXG5uKaU_j4y-ubjhPtvsiA926tBWmWuTMgWw&s=10", "bio": "과일끼리 많이 닿은 부분은 빨리 상하게 쉬운데 달걀판에 키위를 넣어주면 깨끗하게 보관할 수 있다.", "emoji": "📷", "title": "나의 첫 게시물", "txt": "여기에 내용을 써요", "tag": "#해솔중 #웹마스터", "like": 0, "pimg": ""}, {"name": "최태윤", "no": "30627", "id": "fromis_9", "img": "https://images.khan.co.kr/article/2026/07/23/news-p.v1.20260723.309ad36df40641938630f2574df89beb_P1.jpg", "bio": "게임하는 사람", "emoji": "🍀", "title": "플로버", "txt": "여기에 내용을 써요", "tag": "#해솔중 #웹마스터", "like": 0, "pimg": ""}, {"name": "김영우", "no": "30705", "id": "yoxu1n_", "img": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQq1dbJmUKWainvH318wNukVB-I4rYDEe4gbYpsxGg2Aw&s=10", "bio": "농구 좋아하는 사람", "emoji": "🏀", "title": "김영우", "txt": "안산해솔중 자모란트, 김단우보다 3배 잘함", "tag": "#포인트가드", "like": 0, "pimg": ""}, {"name": "김태성", "no": "30708", "id": "_xtkrmn", "img": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQBhGrZWvlieLhbAlc5o6ZhWLf63wI2vj38KfaYpb2w0g&s=10", "bio": "뽀로로와 친구들", "emoji": "📷", "title": "아라아라 들어아라", "txt": "아 줴줴이야 노는게 제일좋아 이렐킹 들어와라", "tag": "이상혁 친구", "like": 0, "pimg": ""}, {"name": "배서현", "no": "30715", "id": "xeohy_.un", "img": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRynsznsV4M1Ws5w5hT7ozsQ2V9Gjoxvz55Leszlbw0-g&s=10", "bio": "게임하는 사람", "emoji": "📷", "title": "나의 첫 게시물", "txt": "T1 !!!!!!!!!! 줴줴이야!!!!! 엄 아뇨아뇨아뇨", "tag": "야스오 장인", "like": 0, "pimg": ""}, {"name": "이정빈", "no": "30817", "id": "L_jbin", "img": "https://th.bing.com/th/id/R.3d6c67706a1667b02322df49f96fe4ea?rik=zhaEMPnMyC%2bI1g&riu=http%3a%2f%2fpostfiles8.naver.net%2f20161004_87%2fby267_1475545735829x3bvR_JPEG%2f%25BC%25AD%25BF%25EF%25B4%25EB%25C7%d0%b1%25B3%25B7%ce%b0%25ED-06.jpg%3ftype%3dw773&ehk=OJi%2f9dm6m0350zqwIbviNqcSkgSogj3Hd2wsLQkP7Dk%3d&risl=&pid=ImgRaw&r=0", "bio": "공부를 한다", "emoji": "📷", "title": "나의 첫 게시물", "txt": "여기에 내용을 써요", "tag": "#해솔중 #웹마스터", "like": 0, "pimg": ""}, {"name": "최정은", "no": "30825", "id": "xunxeun", "img": "https://img.khan.co.kr/news/2010/02/01/3-2.jpg", "bio": "음악듣는 사람", "emoji": "^_^", "title": "오늘도 음악", "txt": "친구들이랑 같이 들었다!", "tag": "#음악", "like": 24, "pimg": ""}, {"name": "박태윤", "no": "30914", "id": "이승호", "img": "https://i.namu.wiki/i/CYEU-2yjiFO1jiMJ5w4LGCeDQx62gxgNJs11usS3q08n9Y0ncSJqD6QP7q7DXL-uV8ubxmbqU256DTfA5rMWCQ.jpg", "bio": "게임", "emoji": "📷", "title": "나의 첫 게시물", "txt": "df", "tag": "#해솔중 #웹마스터", "like": 0, "pimg": ""}, {"name": "이승호", "no": "30919", "id": "qkrxodbsrotlqkfqudtlstoRL", "img": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTTrjNq8_Tj9WF0gG9PIDovyX_cxlk8UmSrhTsE7-bj_6SlnznUPQEM_EYJ&s=10", "bio": "나를 소개하는 한 줄", "emoji": "📷", "title": "ashjhysauidhguiyasgedyueqtwfg87r64r5def", "txt": "dygcfasU", "tag": "#해솔중 #웹마스터", "like": 0, "pimg": ""}, {"name": "구도현", "no": "31002", "id": "dohyeon_koo11", "img": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS_E9BC4GU14vJ2Oz5utm0DslccLIW8kuKaawcfVlKwMA&s=10", "bio": "어 구도현이야🦝🧑‍🦰🧔‍♂️", "emoji": "🎸", "title": "기타치기", "txt": "어 도현이형이야", "tag": "#기타 #구도현", "like": 10000, "pimg": ""}, {"name": "황하영", "no": "31029", "id": "h.yeong", "img": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTcnsAQYAdSN5D7O4ciWFHLTOCPkaGvuwENr0PINzAMDg&s=10", "bio": "그림쟁이 🎨", "emoji": "🌊🐟", "title": "벼랑 위의 포뇨", "txt": "포뇨 왕 기여워ㅓ", "tag": "#벼랑 #위의 #포뇨", "like": 1000, "pimg": ""}];
+const BYNAME = PEOPLE.slice().sort((a, b) => a.name.localeCompare(b.name, 'ko'));
+
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const icon = n => `<svg class="i"><use href="#i-${n}"/></svg>`;
+const img = src => `<img src="${esc(src)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">`;
+const avatar = p => `<div class="av"><div class="in">${esc(p.name[0])}${p.img ? img(p.img) : ''}</div></div>`;
+
+function shuffled(arr){
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+  return a;
+}
+function renderHome(){
+  document.getElementById('people').innerHTML = shuffled(PEOPLE).map(p => `
+    <button class="pp" data-open data-n="${esc(p.name)}">${avatar(p)}
+      <b>${esc(p.id)}</b><small>${esc(p.name)}</small>
+    </button>`).join('');
+}
+
+function renderSearch(){
+  const raw = document.getElementById('q').value.trim();
+  const q = raw.toLowerCase().replace(/^@/, '');
+  const list = (!q ? BYNAME : BYNAME.filter(p => [p.name, p.id, p.no].some(v => String(v).toLowerCase().includes(q))));
+  document.getElementById('clr').style.display = raw ? 'grid' : 'none';
+  document.getElementById('slabel').textContent = q ? `검색 결과 ${list.length}명` : '우리 반 전체';
+  document.getElementById('results').innerHTML = list.length ? list.map(p => `
+    <button class="row" data-open data-n="${esc(p.name)}">${avatar(p)}
+      <div><b>${esc(p.id)}</b><small>${esc(p.name)} • ${esc(p.no)}</small></div>
+    </button>`).join('') : '<div class="none">검색 결과가 없어요</div>';
+}
+
+function renderNotify(){
+  const P = shuffled(PEOPLE);
+  const a = i => P[i % P.length];
+  const s2 = (x, y) => `<div class="stack">${avatar(x)}${avatar(y)}</div>`;
+  const thumb = p => `<div class="thumb">${p.pimg ? img(p.pimg) : esc(p.emoji)}</div>`;
+  const rows = [
+    ['오늘', [
+      [s2(a(0), a(1)), `<b>${esc(a(0).id)}</b>님, <b>${esc(a(1).id)}</b>님 외 21명이 회원님의 페이지를 좋아합니다. 23명 모두 <b>직접 코딩</b>해서 만든 페이지예요.`, '방금', thumb(a(0))],
+      [avatar(a(2)), `<b>${esc(a(2).id)}</b>님이 VS Code에서 <b>HTML 코드를 한 줄씩 직접 입력</b>해 프로필을 완성했습니다.`, '12분', thumb(a(2))],
+      [avatar(a(3)), `<b>${esc(a(3).id)}</b>님이 <b>CSS 빈칸 21개</b>를 채워 게시물을 인스타처럼 꾸몄습니다. ❤️`, '1시간', thumb(a(3))],
+    ]],
+    ['이번 주', [
+      [s2(a(4), a(5)), `<b>${esc(a(4).id)}</b>님과 <b>${esc(a(5).id)}</b>님이 <b>border-radius: 50%</b>로 프로필 사진을 동그랗게 만들었습니다.`, '2일', thumb(a(4))],
+      [avatar(a(6)), `<b>${esc(a(6).id)}</b>님이 <b>::after</b>로 HTML에 없던 팔로워 숫자를 만들어냈습니다. ✨`, '3일', thumb(a(6))],
+      [`<div class="av"><div class="in">웹</div></div>`, `<b>웹마스터</b>님이 회원님을 팔로우하기 시작했습니다. 직접 코딩한 페이지 잘 봤어요! 👏`, '4일', `<button class="follow">맞팔로우</button>`],
+    ]],
+    ['이번 달', [
+      [s2(a(8), a(9)), `<b>${esc(a(8).id)}</b>님 외 22명이 <b>HTML로 첫 페이지</b>를 만들었습니다. · 2차시`, '2주', thumb(a(8))],
+      [avatar(a(10)), `<b>${esc(a(10).id)}</b>님이 <b>F12 개발자 도구</b>로 웹페이지 속 코드를 처음 들여다봤습니다. · 1차시`, '3주', thumb(a(10))],
+    ]],
+  ];
+  let k = 0;
+  document.getElementById('nlist').innerHTML = rows.map(([g, list]) =>
+    `<div class="ngroup">${g}</div>` + list.map(([av, t, when, right]) => `
+      <div class="nrow" style="animation-delay:${(k++) * 60}ms">${av}
+        <div class="txt">${t}<time>${when}</time></div>${right}
+      </div>`).join('')).join('');
+}
+
+let dotTimer, notifyTimer;
+
+function go(v){
+  /* 알림 화면을 띄워두면 누른 시점부터 8초마다 친구 아이디가 바뀌어요 */
+  clearInterval(notifyTimer);
+  if (v === 'notify') {
+    renderNotify();
+    notifyTimer = setInterval(renderNotify, 8000);
+    document.body.classList.add('seen');
+    clearTimeout(dotTimer);
+    dotTimer = setTimeout(() => document.body.classList.remove('seen'), 5000);   // 5초 뒤 빨간 점 다시
+  }
+  document.querySelectorAll('.view').forEach(s => s.classList.toggle('on', s.id === 'v-' + v));
+  document.querySelectorAll('.nav [data-go], .mbot [data-go]').forEach(b => b.classList.remove('on'));
+  document.querySelectorAll(`.nav [data-go="${v}"], .mbot [data-go="${v}"]`).forEach((b, i) => { if (i === 0 || b.closest('.mbot')) b.classList.add('on'); });
+  if (v === 'search') { renderSearch(); setTimeout(() => document.getElementById('q').focus(), 50); }
+  window.scrollTo(0, 0);
+}
+
+function openPage(name){
+  const p = PEOPLE.find(x => x.name === name);
+  const url = encodeURIComponent(name) + '.html';
+  document.getElementById('vav').innerHTML = avatar(p);
+  document.getElementById('vtitle').textContent = p.id;
+  document.getElementById('vopen').href = url;
+  document.getElementById('vframe').src = url;
+  document.getElementById('viewer').classList.add('on');
+}
+function closePage(){
+  document.getElementById('viewer').classList.remove('on');
+  document.getElementById('vframe').src = 'about:blank';
+}
+
+document.addEventListener('click', e => {
+  const f = e.target.closest('.follow'); if (f) { f.classList.toggle('on'); f.textContent = f.classList.contains('on') ? '팔로잉' : '맞팔로우'; return; }
+  const g = e.target.closest('[data-go]'); if (g) return go(g.dataset.go);
+  if (e.target.id === 'shuffle') return renderHome();
+  const o = e.target.closest('[data-open]'); if (o) return openPage(o.dataset.n);
+  if (e.target.id === 'viewer' || e.target.id === 'vclose') closePage();
+  if (e.target.id === 'clr') { document.getElementById('q').value = ''; renderSearch(); }
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closePage(); });
+document.getElementById('q').addEventListener('input', renderSearch);
+
+renderHome();
+</script>
+</body>
+</html>
