@@ -298,15 +298,11 @@
     user-select: none;             /* 두 번 눌러도 글자가 파랗게 선택되지 않게 */
   }
   .post h2.pop::after {            /* 사진을 두 번 누르면 큰 하트가 뿅! */
-    content: "♥";
+    content: "";
     position: absolute;
     inset: 0;
-    display: grid;
-    place-items: center;
-    font-family: Arial, sans-serif;
-    font-size: 120px;
-    color: white;
-    text-shadow: 0 0 24px rgba(0, 0, 0, 0.25);
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='white' d='M16.8 3.6c-2 0-3.6 1-4.8 2.7-1.2-1.7-2.8-2.7-4.8-2.7C4.3 3.6 2 6 2 9c0 5.6 8.8 10.9 10 11.6C13.2 19.9 22 14.6 22 9c0-3-2.3-5.4-5.2-5.4z'/%3E%3C/svg%3E") center / 110px no-repeat;
+    filter: drop-shadow(0 0 12px rgba(0, 0, 0, 0.3));
     animation: pop 0.8s ease forwards;
   }
   @keyframes pop {
