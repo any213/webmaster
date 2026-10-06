@@ -21,7 +21,7 @@
   <div class="post">
     <h4>@kimm._.mr</h4>
     <h2>🎮</h2>
-    <div class="icons"><span class="heart">♡</span> 💬 ✈</div>
+    <div class="icons"><span class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M16.8 3.6c-2 0-3.6 1-4.8 2.7-1.2-1.7-2.8-2.7-4.8-2.7C4.3 3.6 2 6 2 9c0 5.6 8.8 10.9 10 11.6C13.2 19.9 22 14.6 22 9c0-3-2.3-5.4-5.2-5.4z"/></svg></span> <span class="comment"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M20.6 16.5A9.3 9.3 0 1 0 17 20l4.2 1.2z"/></svg></span> <span class="share"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M22 3 9.2 10.1M22 3l-6.8 18-3.8-8.6L2.5 8z"/></svg></span></div>
     <h3>오늘도 마인크래프트</h3>
     <p>친구들이랑 마을 만들었다!</p>
     <p>#마인크래프트 #건축</p>
@@ -280,6 +280,42 @@
   
     content: "2시간 전";            /* ㉑ 해시태그 뒤에 붙일 시간 글자 → 따옴표 " " 안에! */
   }
+  
+  /* 인스타 아이콘 모양 (그대로 두세요) */
+  .icons svg {
+    width: 1em;
+    height: 1em;
+    vertical-align: middle;
+  }
+  .icons span + span {
+    margin-left: 10px;
+  }
+  .heart.liked svg {
+    fill: currentColor;            /* 좋아요를 누르면 하트가 꽉 차요 */
+  }
+  .post h2 {
+    position: relative;
+    user-select: none;             /* 두 번 눌러도 글자가 파랗게 선택되지 않게 */
+  }
+  .post h2.pop::after {            /* 사진을 두 번 누르면 큰 하트가 뿅! */
+    content: "♥";
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    font-family: Arial, sans-serif;
+    font-size: 120px;
+    color: white;
+    text-shadow: 0 0 24px rgba(0, 0, 0, 0.25);
+    animation: pop 0.8s ease forwards;
+  }
+  @keyframes pop {
+    0%   { opacity: 0; transform: scale(0.3); }
+    15%  { opacity: 1; transform: scale(1.2); }
+    30%  { transform: scale(1); }
+    80%  { opacity: 1; }
+    100% { opacity: 0; }
+  }
   </style>
 
   <!-- =====================================================
@@ -288,14 +324,30 @@
        ===================================================== -->
 
   <script>
-    // ① 찾기 : 하트와 숫자를 찾아서 이름표(변수)를 붙여요
+    // ① 찾기 : 하트와 숫자, 사진 칸을 찾아서 이름표(변수)를 붙여요
     let heart = document.querySelector(".heart");
     let count = document.querySelector(".count");
+    let photo = document.querySelector(".post h2");
+    let liked = false;              // 지금 좋아요를 눌렀는지 기억하는 상자
 
-    // ② 반응하기 + ③ 바꾸기 : 하트를 누르면 숫자를 1 올려요
-    heart.onclick = function () {
-      count.textContent = Number(count.textContent) + 1;
-      heart.textContent = "♥";
+    // ② 바꾸기 : 누를 때마다 좋아요 ↔ 취소
+    function toggleLike() {
+      if (liked) {
+        count.textContent = Number(count.textContent) - 1;
+        heart.classList.remove("liked");
+      } else {
+        count.textContent = Number(count.textContent) + 1;
+        heart.classList.add("liked");
+      }
+      liked = !liked;
+    }
+
+    // ③ 반응하기 : 하트를 누르면 좋아요/취소, 사진을 두 번 누르면 좋아요
+    heart.onclick = toggleLike;
+    photo.ondblclick = function () {
+      if (!liked) toggleLike();
+      photo.classList.add("pop");
+      setTimeout(function () { photo.classList.remove("pop"); }, 800);
     };
   </script>
 
