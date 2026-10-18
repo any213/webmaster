@@ -308,7 +308,7 @@
     loadSource().then(function (src) {
       openPanel(); devOn = true;
       $('bFast').style.display = 'none';
-      ttl.innerHTML = '<small>' + esc(NAME) + '.html · 실제 코드</small>' + src.length + '줄 — 화면에 마우스를 올려 보세요';
+      ttl.innerHTML = '<small>' + esc(NAME) + '.html · 실제 코드</small>' + src.length + '줄 — 화면의 상자를 ' + (touchy ? '눌러' : '눌러 보거나 마우스를 올려') + ' 보세요';
       prog.style.width = '100%';
       var inCss = false, inJs = false, html = [];
       src.forEach(function (l, i) {
@@ -349,9 +349,20 @@
     }
   }
   var lastHover = null;
+  var touchy = window.matchMedia && window.matchMedia('(hover: none)').matches;
+  // 코드 보기 중에는 눌러도 링크·하트가 동작하지 않고, 누른 상자의 코드를 보여줘요 (태블릿 터치용)
+  ['click', 'dblclick'].forEach(function (ev) {
+    document.addEventListener(ev, function (e) {
+      if (!devOn || e.target === host) return;
+      e.preventDefault(); e.stopPropagation();
+      pick(e.target, e.clientX, e.clientY);
+    }, true);
+  });
   document.addEventListener('mousemove', function (e) {
-    if (!devOn) return;
-    var el = e.target;
+    if (!devOn || touchy) return;
+    pick(e.target, e.clientX, e.clientY);
+  });
+  function pick(el, cx, cy) {
     if (el === host) return;
     var tip = $('tip');
     // svg 안쪽은 아이콘 전체로
@@ -359,8 +370,8 @@
     if (el && el.tagName === 'svg') el = el.parentNode;
     if (!el || el === document.body || el === document.documentElement) { tip.style.display = 'none'; return; }
     tip.style.display = 'block';
-    tip.style.left = Math.min(e.clientX + 14, window.innerWidth - 200) + 'px';
-    tip.style.top = (e.clientY + 16) + 'px';
+    tip.style.left = Math.min(cx + 14, window.innerWidth - 200) + 'px';
+    tip.style.top = (cy + 16) + 'px';
     tip.textContent = '<' + el.tagName.toLowerCase() + (el.className && typeof el.className === 'string' ? ' class="' + el.className.replace(/\s*hs-\S+/g, '').trim() + '"' : '').replace(' class=""', '') + '>';
     if (el === lastHover) return;
     if (lastHover) lastHover.classList.remove('hs-hover');
@@ -371,7 +382,7 @@
       if (ln) { ln.classList.add('hot'); hot.push(ln); ln.scrollIntoView({ block: 'center', behavior: 'smooth' }); }
       break;
     }
-  });
+  }
   function devOff() {
     devOn = false; document.body.classList.remove('hs-x');
     if (lastHover) lastHover.classList.remove('hs-hover'); lastHover = null;
