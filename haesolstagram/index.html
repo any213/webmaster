@@ -583,6 +583,13 @@ renderHome();
 (function(){
   const IDLE = 90 * 1000;          // 90초 동안 아무 입력이 없으면 시작
   let last = Date.now(), running = false, startedAt = 0, loopTimer;
+  // 아무도 안 보고 있으니 처음 화면(홈)으로 되돌려 놓아요
+  function reset(){
+    try { closePage(); } catch(e) {}
+    try { const q = document.getElementById('q'); if (q && q.value) { q.value = ''; q.dispatchEvent(new Event('input')); } } catch(e) {}
+    try { go('home'); } catch(e) {}
+    window.scrollTo(0, 0);
+  }
   function cycle(){
     if (!running) return;
     window.hsIntro(() => { if (running) window.hsCredits(); });
@@ -604,7 +611,7 @@ renderHome();
     if ('wide' in d) document.getElementById('viewer').classList.toggle('wide', !!d.wide);
   });
   setInterval(() => {
-    if (!running && Date.now() - last > IDLE) { running = true; startedAt = Date.now(); cycle(); }
+    if (!running && Date.now() - last > IDLE) { running = true; startedAt = Date.now(); reset(); cycle(); }
   }, 2000);
 })();
 </script>

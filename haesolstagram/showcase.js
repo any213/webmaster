@@ -35,7 +35,7 @@
   // ───────── 화면 UI (Shadow DOM: 학생 CSS 와 섞이지 않게) ─────────
   var host = document.createElement('div');
   host.setAttribute('data-hs', 'host');
-  document.body.appendChild(host);
+  document.documentElement.appendChild(host);   // body 밖에 두어야 화면 축소(zoom)에 영향받지 않아요
   var root = host.attachShadow({ mode: 'open' });
   root.innerHTML =
     '<style>' +
@@ -109,26 +109,32 @@
   // 넓으면: 카드는 왼쪽, 코드는 오른쪽 (인스타 댓글창처럼) / 좁으면: 아래
   var mode = 'bottom', isOpen = false, inFrame = window.parent !== window;
   function tellParent(msg) { if (inFrame) try { window.parent.postMessage(Object.assign({ hs: 1 }, msg), '*'); } catch (e) {} }
+  // 카드 전체가 스크롤 없이 한눈에 보이도록 크기를 맞춰요 (너무 작아지지는 않게)
   function layout() {
     if (!isOpen) return;
-    var W = window.innerWidth, card = 470, gap = 24;
+    var W = window.innerWidth, H = window.innerHeight, gap = 24, z;
+    sideCss.textContent = ''; document.body.classList.remove('hs-padb');
+    var natH = document.documentElement.scrollHeight;
     panel.className = 'panel on';
     if (W >= 860) {
       mode = 'right';
+      z = Math.max(0.6, Math.min(1, (H - 8) / natH));
+      var card = 470 * z;
       var pw = Math.min(720, W - card - gap - 40);
       var left = Math.max(16, (W - card - gap - pw) / 2);
       panel.classList.add('right');
       panel.style.width = pw + 'px'; panel.style.left = (left + card + gap) + 'px'; panel.style.right = '';
       panel.style.setProperty('--fs', (pw >= 560 ? 16 : 14) + 'px');
-      sideCss.textContent = 'body{margin-left:' + left + 'px!important;margin-right:0!important}';
-      document.body.classList.remove('hs-padb');
+      sideCss.textContent = 'body{zoom:' + z + ';margin-left:' + (left / z) + 'px!important;margin-right:0!important}';
     } else {
       mode = 'bottom';
+      z = Math.max(0.55, Math.min(1, (H * 0.56 - 8) / natH, (W - 16) / 470));
       panel.classList.add('bottom'); panel.style.width = ''; panel.style.left = ''; panel.style.setProperty('--fs', '14px');
-      sideCss.textContent = '';
+      sideCss.textContent = 'body{zoom:' + z + '}';
       document.body.classList.add('hs-padb');
     }
   }
+  function refit() { setTimeout(layout, 50); setTimeout(layout, 750); }
   function openPanel() {
     isOpen = true; tellParent({ wide: true });
     $('dock').style.display = 'none';
@@ -249,6 +255,8 @@
     baseCss.textContent = P.base + '\nimg{max-width:100%}\n.profile,.post,.profile *,.post *{transition:all .6s ease}';
     liveCss = document.createElement('style'); liveCss.dataset.hs = '1';
     document.head.appendChild(baseCss); document.head.appendChild(liveCss);
+    refit();
+    document.querySelectorAll('img').forEach(function (im) { if (!im.complete) im.addEventListener('load', refit, { once: true }); });
     window.scrollTo({ top: 0 });
     var total = P.steps.length + 2, k = 0;
     function setHead(small, big) { ttl.innerHTML = '<small>' + esc(small) + '</small>' + esc(big); prog.style.width = (k / total * 100) + '%'; }
@@ -265,6 +273,7 @@
         return typeLines(st.lines, hlCss, id).then(function () {
           liveCss.textContent += '\n' + st.css;
           setTimeout(function () { flash(target); }, 80);
+          refit();
           return sleep(1300, id);
         });
       });
@@ -293,7 +302,7 @@
     chain.then(function () {
       k = total; prog.style.width = '100%';
       liveCss.remove(); liveCss = null; userStyle.media = '';
-      setTimeout(function () { if (baseCss) { baseCss.remove(); baseCss = null; } }, 700);
+      setTimeout(function () { if (baseCss) { baseCss.remove(); baseCss = null; } refit(); }, 700);
       $('bFast').style.display = 'none';
       $('doneTxt').innerHTML = '<b>' + esc(NAME) + '</b> 학생이 직접 쓴<br>코드 <b>' + (source ? source.length : '') + '</b>줄로 만든 페이지예요';
       $('done').classList.add('on');
